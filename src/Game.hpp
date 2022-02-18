@@ -1,15 +1,7 @@
 #ifndef _GAME_HPP_
 #define _GAME_HPP_
 
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/System/Clock.hpp>
-#include <SFML/Window/Event.hpp>
-
-#include <imgui-SFML.h>
-#include <imgui.h>
-
-#include <iostream>
-#include <string>
+#include "Canvas.hpp"
 
 class Game
 {
@@ -20,21 +12,35 @@ private:
 
     std::string m_Title;
 
+    std::vector<RectObject> m_Objects;
+
 private:
+    // Init functions
     void initWindow();
     void initGui();
-    void initClock();
-public:
-    Game(std::string title);
-
-    virtual ~Game();
-
-    void printName();
-
+    void initLightMap();
+    
+    // Run-time core
     void update();
     void GUI();
     void render();
+
+    // Run-time Setters
+
+    // Run-time Accessors
+    const sf::Vector2f getMousePositon();
+
+    // Shutdown functions
     void shutDown();
+
+public:
+    // Constructor
+    Game(std::string title);
+
+    // Deconstructor
+    virtual ~Game();
+
+    // Run Game
     void run();
 };
 
