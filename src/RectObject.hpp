@@ -29,9 +29,12 @@ private:
     sf::Color m_HoverColor;
     sf::Color m_ActiveColor;
 
-private:
-    void objectGui();
+    bool m_Active;
+    bool m_Alive;
 
+private:
+    void updateInput(const sf::Vector2f & mouse_position);
+    void updateObject();
 public:
     // Constructors
     RectObject(
@@ -44,6 +47,9 @@ public:
 
     // Accessors
     const bool mouseOver(const sf::Vector2f & mouse_position);
+    const bool & isActive() const;
+    const bool & isAlive() const;
+    void getObjectGUI();
 
     // Setters
     void setState(ObjectState state);

@@ -31,10 +31,23 @@ void Game::update()
             this->m_Window.close();
     }
 
+    // Set active object to nullptr if no one is selected
+    this->mref_ActiveObject = nullptr;
+
     // Update objects
-    for (RectObject *obj : this->m_Objects)
-    {
-        obj->update(this->getMousePositon());
+    auto obj_iter = this->m_Objects.begin();
+    while (obj_iter != this->m_Objects.end())
+    {   
+        // Update the object
+        (*obj_iter)->update(this->getMousePositon());
+
+        if (!(*obj_iter)->isAlive())
+        {
+            delete *obj_iter;
+            obj_iter = this->m_Objects.erase(obj_iter);
+        }
+        else
+            ++obj_iter;
     }
 
     ImGui::SFML::Update(this->m_Window, this->m_DeltaClock.restart());
@@ -49,11 +62,10 @@ void Game::GUI()
         this->getMousePositon().y
     );
 
-    if (ImGui::Button("Add Light"))
+    if (ImGui::Button("Add Object"))
     {
-        std::cout << "Pressed light btn!" << std::endl;
+        this->addObject();
     }
-
 }
 
 void Game::render()
@@ -66,6 +78,10 @@ void Game::render()
     {
         obj->render(this->m_Window);
     }
+
+    // Render active object GUI
+    if (this->mref_ActiveObject)
+        this->mref_ActiveObject->getObjectGUI();
     
     // Render Gui
     ImGui::SFML::Render(this->m_Window);
@@ -75,6 +91,16 @@ void Game::render()
 }
 
 // Run-time Setters
+
+void Game::addObject()
+{
+    this->m_Objects.push_back(
+        new RectObject(
+            sf::Vector2f(0.f, 0.f),
+            sf::Vector2f(100.f, 100.f)
+        )
+    );
+}
 
 // Run-time Accessors
 
@@ -92,8 +118,10 @@ void Game::shutDown()
     ImGui::SFML::Shutdown();
 }
 
-Game::Game(std::string name)
-    : m_Title {name}
+Game::Game(
+    std::string name
+) : m_Title {name},
+    mref_ActiveObject {nullptr}
 {
     this->initWindow();
     this->initGui();

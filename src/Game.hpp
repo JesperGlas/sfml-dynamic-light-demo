@@ -13,6 +13,7 @@ private:
     std::string m_Title;
 
     std::vector<RectObject *> m_Objects;
+    RectObject * mref_ActiveObject;
 
 private:
     // Init functions
@@ -26,6 +27,7 @@ private:
     void render();
 
     // Run-time Setters
+    void addObject();
 
     // Run-time Accessors
     const sf::Vector2f getMousePositon();
