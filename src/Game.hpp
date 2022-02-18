@@ -12,7 +12,7 @@ private:
 
     std::string m_Title;
 
-    std::vector<RectObject> m_Objects;
+    std::vector<RectObject *> m_Objects;
 
 private:
     // Init functions

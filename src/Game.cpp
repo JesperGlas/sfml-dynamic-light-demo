@@ -32,9 +32,9 @@ void Game::update()
     }
 
     // Update objects
-    for (RectObject obj : this->m_Objects)
+    for (RectObject *obj : this->m_Objects)
     {
-        obj.update(this->getMousePositon());
+        obj->update(this->getMousePositon());
     }
 
     ImGui::SFML::Update(this->m_Window, this->m_DeltaClock.restart());
@@ -62,9 +62,9 @@ void Game::render()
     this->m_Window.clear(sf::Color::Black);
 
     // Render objects
-    for (RectObject obj : this->m_Objects)
+    for (RectObject *obj : this->m_Objects)
     {
-        obj.render(this->m_Window);
+        obj->render(this->m_Window);
     }
     
     // Render Gui
@@ -100,7 +100,7 @@ Game::Game(std::string name)
 
     // Create objects
     this->m_Objects.push_back(
-        RectObject(
+        new RectObject(
             sf::Vector2f(100.f, 200.f),
             sf::Vector2f(125.f, 200.f)
         )
@@ -109,7 +109,10 @@ Game::Game(std::string name)
 
 Game::~Game()
 {
-
+    for (RectObject *obj : this->m_Objects)
+    {
+        delete obj;
+    }
 }
 
 void Game::run()
