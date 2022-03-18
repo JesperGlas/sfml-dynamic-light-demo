@@ -71,6 +71,11 @@ void Game::render()
 void Game::addObject()
 {
     std::cout << "Adding object placeholder..." << std::endl;
+    Vec2f v = Vec2f();
+    v.x = 1.f;
+    v.y = 0.5f;
+
+    std::cout << "Test v is [" << v.x << ", " << v.y << "]" << std::endl;
 }
 
 // Run-time Accessors

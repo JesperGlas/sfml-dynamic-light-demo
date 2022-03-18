@@ -7,6 +7,7 @@
 #include "imgui.h"
 
 #include "Canvas.hpp"
+#include "Vec2f.hpp"
 
 class Game
 {
