@@ -1,10 +1,13 @@
 #ifndef _RECTOBJECT_HPP_
 #define _RECTOBJECT_HPP_
 
-#include <SFML/Graphics.hpp>
+#include "SFML/Graphics.hpp"
+#include "imgui-SFML.h"
+#include "imgui.h"
 
-#include <imgui-SFML.h>
-#include <imgui.h>
+//#include <SFML/Graphics.hpp>
+//#include <imgui-SFML.h>
+//#include <imgui.h>
 
 #include <iostream>
 #include <string>
