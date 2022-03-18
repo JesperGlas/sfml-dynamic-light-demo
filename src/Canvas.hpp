@@ -1,7 +1,7 @@
 #ifndef _CANVAS_HPP_
 #define _CANVAS_HPP_
 
-#include "RectObject.hpp"
+#include "SFML/Graphics.hpp"
 
 class Canvas
 {

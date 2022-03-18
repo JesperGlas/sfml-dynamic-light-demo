@@ -31,24 +31,8 @@ void Game::update()
             this->m_Window.close();
     }
 
-    // Set active object to nullptr if no one is selected
-    this->mref_ActiveObject = nullptr;
-
     // Update objects
-    auto obj_iter = this->m_Objects.begin();
-    while (obj_iter != this->m_Objects.end())
-    {   
-        // Update the object
-        (*obj_iter)->update(this->getMousePositon());
 
-        if (!(*obj_iter)->isAlive())
-        {
-            delete *obj_iter;
-            obj_iter = this->m_Objects.erase(obj_iter);
-        }
-        else
-            ++obj_iter;
-    }
 
     ImGui::SFML::Update(this->m_Window, this->m_DeltaClock.restart());
 }
@@ -74,14 +58,6 @@ void Game::render()
     this->m_Window.clear(sf::Color::Black);
 
     // Render objects
-    for (RectObject *obj : this->m_Objects)
-    {
-        obj->render(this->m_Window);
-    }
-
-    // Render active object GUI
-    if (this->mref_ActiveObject)
-        this->mref_ActiveObject->getObjectGUI();
     
     // Render Gui
     ImGui::SFML::Render(this->m_Window);
@@ -94,12 +70,7 @@ void Game::render()
 
 void Game::addObject()
 {
-    this->m_Objects.push_back(
-        new RectObject(
-            sf::Vector2f(0.f, 0.f),
-            sf::Vector2f(100.f, 100.f)
-        )
-    );
+    std::cout << "Adding object placeholder..." << std::endl;
 }
 
 // Run-time Accessors
@@ -120,27 +91,18 @@ void Game::shutDown()
 
 Game::Game(
     std::string name
-) : m_Title {name},
-    mref_ActiveObject {nullptr}
+) : m_Title {name}
 {
     this->initWindow();
     this->initGui();
 
     // Create objects
-    this->m_Objects.push_back(
-        new RectObject(
-            sf::Vector2f(100.f, 200.f),
-            sf::Vector2f(125.f, 200.f)
-        )
-    );
+
 }
 
 Game::~Game()
 {
-    for (RectObject *obj : this->m_Objects)
-    {
-        delete obj;
-    }
+
 }
 
 void Game::run()

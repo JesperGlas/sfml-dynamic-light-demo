@@ -1,6 +1,11 @@
 #ifndef _GAME_HPP_
 #define _GAME_HPP_
 
+#include <iostream>
+
+#include "imgui-SFML.h"
+#include "imgui.h"
+
 #include "Canvas.hpp"
 
 class Game
@@ -11,9 +16,6 @@ private:
     sf::Clock m_DeltaClock;
 
     std::string m_Title;
-
-    std::vector<RectObject *> m_Objects;
-    RectObject * mref_ActiveObject;
 
 private:
     // Init functions
