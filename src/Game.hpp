@@ -6,7 +6,6 @@
 #include "imgui-SFML.h"
 #include "imgui.h"
 
-#include "Canvas.hpp"
 #include "EdgeShape.hpp"
 
 class Game
