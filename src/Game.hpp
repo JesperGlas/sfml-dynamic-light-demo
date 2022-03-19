@@ -7,7 +7,7 @@
 #include "imgui.h"
 
 #include "Canvas.hpp"
-#include "Vec2f.hpp"
+#include "EdgeShape.hpp"
 
 class Game
 {
@@ -17,6 +17,8 @@ private:
     sf::Clock m_DeltaClock;
 
     std::string m_Title;
+
+    EdgeShape test;
 
 private:
     // Init functions

@@ -58,6 +58,7 @@ void Game::render()
     this->m_Window.clear(sf::Color::Black);
 
     // Render objects
+    test.render(this->m_Window);
     
     // Render Gui
     ImGui::SFML::Render(this->m_Window);
@@ -71,11 +72,6 @@ void Game::render()
 void Game::addObject()
 {
     std::cout << "Adding object placeholder..." << std::endl;
-    Vec2f v = Vec2f();
-    v.x = 1.f;
-    v.y = 0.5f;
-
-    std::cout << "Test v is [" << v.x << ", " << v.y << "]" << std::endl;
 }
 
 // Run-time Accessors
@@ -96,13 +92,12 @@ void Game::shutDown()
 
 Game::Game(
     std::string name
-) : m_Title {name}
+) : m_Title {name}, test(EdgeShape(Vec2f(100.f, 100.f), Vec2f(400.f, 400.f)))
 {
     this->initWindow();
     this->initGui();
 
     // Create objects
-
 }
 
 Game::~Game()
