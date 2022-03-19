@@ -4,6 +4,10 @@
 
 // Init functions
 
+/**
+ * @brief Function responsible for initializing the main window.
+ * 
+ */
 void Game::initWindow()
 {
     this->m_Window.create(
@@ -14,6 +18,10 @@ void Game::initWindow()
     m_Window.setFramerateLimit(60);
 }
 
+/**
+ * @brief Function responsible for initializing the main gui.
+ * 
+ */
 void Game::initGui()
 {
     ImGui::SFML::Init(this->m_Window);
@@ -21,8 +29,13 @@ void Game::initGui()
 
 // Run-time Core functions
 
+/**
+ * @brief Function for handling update events for the window, gui and objects.
+ * 
+ */
 void Game::update()
 {
+    // Handle events
     while (m_Window.pollEvent(this->m_Event))
     {
         ImGui::SFML::ProcessEvent(this->m_Event);
@@ -33,10 +46,14 @@ void Game::update()
 
     // Update objects
 
-
+    // Update Gui
     ImGui::SFML::Update(this->m_Window, this->m_DeltaClock.restart());
 }
 
+/**
+ * @brief Function containts the applications main gui.
+ * 
+ */
 void Game::GUI()
 {
     ImGui::Text("Debug Menu");
@@ -52,6 +69,10 @@ void Game::GUI()
     }
 }
 
+/**
+ * @brief Function that handles the applications rendering.
+ * 
+ */
 void Game::render()
 {
     // Clear window
@@ -76,6 +97,11 @@ void Game::addObject()
 
 // Run-time Accessors
 
+/**
+ * @brief Accessor for the mouse position in the window.
+ * 
+ * @return const sf::Vector2f 
+ */
 const sf::Vector2f Game::getMousePositon()
 {
     return sf::Vector2f(
@@ -84,12 +110,24 @@ const sf::Vector2f Game::getMousePositon()
 }
 
 // Shutdown functions
+
+/**
+ * @brief Function resposible for correct shutdown of the application.
+ * 
+ */
 void Game::shutDown()
 {
     std::cout << "Shutting down.." << std::endl;
     ImGui::SFML::Shutdown();
 }
 
+// Constructors
+
+/**
+ * @brief Construct a new Game:: Game object
+ * 
+ * @param name Title of the application.
+ */
 Game::Game(
     std::string name
 ) : m_Title {name}, test(EdgeShape(Vec2f(100.f, 100.f), Vec2f(400.f, 400.f)))
@@ -105,6 +143,10 @@ Game::~Game()
 
 }
 
+/**
+ * @brief Function that handles the applications main loop.
+ * 
+ */
 void Game::run()
 {
     while (this->m_Window.isOpen())
