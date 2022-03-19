@@ -1,5 +1,7 @@
+#ifndef __EDGESHAPE_HPP__
+#define __EDGESHAPE_HPP__
+
 #include "SFML/Graphics.hpp"
-#include "Vec2f.hpp"
 
 class EdgeShape : public sf::VertexArray
 {
@@ -7,7 +9,9 @@ class EdgeShape : public sf::VertexArray
         sf::Vertex start;
         sf::Vertex end;
     public:
-        EdgeShape(Vec2f p1, Vec2f p2);
+        EdgeShape(sf::Vector2f p1, sf::Vector2f p2);
 
         void render(sf::RenderTarget &target);
 };
+
+#endif

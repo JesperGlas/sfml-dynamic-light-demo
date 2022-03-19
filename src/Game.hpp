@@ -1,10 +1,10 @@
 #ifndef _GAME_HPP_
 #define _GAME_HPP_
 
-#include <iostream>
-
 #include "imgui-SFML.h"
 #include "imgui.h"
+
+#include "Vec2f_util.hpp"
 
 #include "EdgeShape.hpp"
 
@@ -16,9 +16,6 @@ private:
     sf::Clock m_DeltaClock;
 
     std::string m_Title;
-
-    EdgeShape test;
-
 private:
     // Init functions
     void initWindow();

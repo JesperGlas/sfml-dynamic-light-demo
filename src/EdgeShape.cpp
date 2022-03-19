@@ -1,6 +1,6 @@
 #include "EdgeShape.hpp"
 
-EdgeShape::EdgeShape(Vec2f p1, Vec2f p2)
+EdgeShape::EdgeShape(sf::Vector2f p1, sf::Vector2f p2)
 : sf::VertexArray(sf::TriangleStrip, 4)
 {
     this->start = this->operator[](0);
@@ -13,10 +13,10 @@ EdgeShape::EdgeShape(Vec2f p1, Vec2f p2)
     end.color = sf::Color::Red;
 
     // Adds width to the EdgeShape to allow rendering
-    this->operator[](2) = Vec2f(p1.x, p1.y + 5);
+    this->operator[](2) = sf::Vector2f(p1.x, p1.y + 5);
     this->operator[](2).color = sf::Color::Red;
 
-    this->operator[](3) = Vec2f(p2.x, p2.y + 5);
+    this->operator[](3) = sf::Vector2f(p2.x, p2.y + 5);
     this->operator[](3).color = sf::Color::Red;
 }
 

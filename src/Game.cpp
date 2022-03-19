@@ -79,7 +79,6 @@ void Game::render()
     this->m_Window.clear(sf::Color::Black);
 
     // Render objects
-    test.render(this->m_Window);
     
     // Render Gui
     ImGui::SFML::Render(this->m_Window);
@@ -94,8 +93,8 @@ void Game::addObject()
 {
     std::cout << "Adding object placeholder..." << std::endl;
 
-    Vec2f v1 = Vec2f(1.2f, 6.3f);
-    Vec2f v2 = Vec2f(-1.2f, -3.7f);
+    sf::Vector2f v1 = sf::Vector2f(1.2f, 6.3f);
+    sf::Vector2f v2 = sf::Vector2f(-1.2f, -3.7f);
     v1 = v1 / 2.f;
     std::cout << "Result is: " << v1 << std::endl;
 }
@@ -135,7 +134,7 @@ void Game::shutDown()
  */
 Game::Game(
     std::string name
-) : m_Title {name}, test(EdgeShape(Vec2f(100.f, 100.f), Vec2f(400.f, 400.f)))
+) : m_Title {name}
 {
     this->initWindow();
     this->initGui();
