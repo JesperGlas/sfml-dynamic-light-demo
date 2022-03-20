@@ -54,7 +54,7 @@ void Game::update()
  * @brief Function containts the applications main gui.
  * 
  */
-void Game::GUI()
+void Game::gui()
 {
     ImGui::Text("Debug Menu");
     ImGui::Text(
@@ -93,10 +93,8 @@ void Game::addObject()
 {
     std::cout << "Adding object placeholder..." << std::endl;
 
-    sf::Vector2f v1 = sf::Vector2f(1.2f, 6.3f);
-    sf::Vector2f v2 = sf::Vector2f(-1.2f, -3.7f);
-    v1 = v1 / 2.f;
-    std::cout << "Result is: " << v1 << std::endl;
+    sf::Vector2f v1 = sf::Vector2f(1.f, 1.f);
+    sf::Vector2f v2 = sf::Vector2f(1.f, 2.f);
 }
 
 // Run-time Accessors
@@ -156,7 +154,7 @@ void Game::run()
     while (this->m_Window.isOpen())
     {
         this->update();
-        this->GUI();
+        this->gui();
         this->render();
     }
 

@@ -6,8 +6,6 @@
 
 #include "Vec2f_util.hpp"
 
-#include "EdgeShape.hpp"
-
 class Game
 {
 private:
@@ -24,7 +22,7 @@ private:
     
     // Run-time core
     void update();
-    void GUI();
+    void gui();
     void render();
 
     // Run-time Setters
