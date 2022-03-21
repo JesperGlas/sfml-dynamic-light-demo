@@ -1,7 +1,7 @@
 #ifndef __EDGE_HPP__
 #define __EDGE_HPP__
 
-#include "Vec2f_util.hpp"
+#include "Vec2fUtil.hpp"
 
 class Edge : public sf::VertexArray
 {

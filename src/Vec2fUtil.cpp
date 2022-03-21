@@ -1,9 +1,7 @@
-#ifndef __VEC2F_UTIL_HPP__
-#define __VEC2F_UTIL_HPP__
+#ifndef __VEC2UTIL_HPP__
+#define __VEC2UTIL_HPP__
 
-#include <iostream>
-#include <math.h>
-#include "SFML/Graphics.hpp"
+#include "Vec2fUtil.hpp"
 
 /**
  * @brief Allows for the << operator in the sf::Vector2f class.
@@ -12,9 +10,14 @@
  * @param v sf::Vector2f
  * @return std::ostream& 
  */
-inline std::ostream & operator<<(std::ostream &out, const sf::Vector2f &v)
+std::ostream & operator<<(std::ostream &out, const sf::Vector2f &v)
 {
     return out << "[" << v.x << ", " << v.y << "]";
+}
+
+int test_sum(int a, int b)
+{
+    return a + b;
 }
 
 #endif

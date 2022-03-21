@@ -4,7 +4,7 @@
 #include "imgui-SFML.h"
 #include "imgui.h"
 
-#include "Vec2f_util.hpp"
+#include "Vec2fUtil.hpp"
 
 class Game
 {
