@@ -15,9 +15,4 @@ std::ostream & operator<<(std::ostream &out, const sf::Vector2f &v)
     return out << "[" << v.x << ", " << v.y << "]";
 }
 
-int test_sum(int a, int b)
-{
-    return a + b;
-}
-
 #endif

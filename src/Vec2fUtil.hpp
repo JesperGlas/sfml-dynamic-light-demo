@@ -9,6 +9,4 @@
 
 std::ostream & operator<<(std::ostream &out, const sf::Vector2f &v);
 
-int test_sum(int a, int b);
-
 #endif

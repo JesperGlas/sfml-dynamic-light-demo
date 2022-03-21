@@ -97,7 +97,6 @@ void Game::addObject()
     sf::Vector2f v2 = sf::Vector2f(1.f, 2.f);
     std::cout << v2 << std::endl;
 
-    std::cout << "a + b = " << test_sum(5, 11) << std::endl;
 }
 
 // Run-time Accessors
