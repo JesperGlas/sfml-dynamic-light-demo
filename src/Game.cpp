@@ -93,9 +93,8 @@ void Game::addObject()
 {
     std::cout << "Adding object placeholder..." << std::endl;
 
-    sf::Vector2f v1 = sf::Vector2f(1.f, 1.f);
-    sf::Vector2f v2 = sf::Vector2f(1.f, 2.f);
-    std::cout << v2 << std::endl;
+    auto v1 = ds::vec2f(1, 1);
+    std::cout << v1 << std::endl;
 
 }
 

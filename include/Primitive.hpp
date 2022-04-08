@@ -1,7 +1,7 @@
 #ifndef __PRIMITIVE_HPP__
 #define __PRIMITIVE_HPP__
 
-#include "Vec2fUtil.hpp"
+#include "vec2f.hpp"
 
 class Primitive
 {
