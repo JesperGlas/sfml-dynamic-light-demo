@@ -60,7 +60,7 @@ message( STATUS "Adding dynamic-shadow-lib")
 FetchContent_Declare(
   dynamic-shadows-lib
   GIT_REPOSITORY https://github.com/JesperGlas/dynamic-shadows-lib/
-  GIT_TAG 1cc0049724f20b2c9975f118bd7a5a8e6dabd09a # Latest
+  GIT_TAG 9dea9abb4c7f0e5c272e9d27f7c8358a2446a0e7 # Latest
   GIT_PROGRESS TRUE
 )
 

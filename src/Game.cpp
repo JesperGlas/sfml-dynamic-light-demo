@@ -16,6 +16,11 @@ void Game::initWindow()
     );
 
     m_Window.setFramerateLimit(60);
+
+    this->m_Shadowmap.create(
+        this->m_Window.getSize().x,
+        this->m_Window.getSize().y
+    );
 }
 
 /**
@@ -75,10 +80,19 @@ void Game::gui()
  */
 void Game::render()
 {
-    // Clear window
+    // Clear window and shadowmap
     this->m_Window.clear(sf::Color::Black);
+    this->m_Shadowmap.clear(sf::Color::Black);
 
-    // Render objects
+
+    // Render objects (To shadowmap for now before shading is implemented)
+    for (auto object : this->m_Objects)
+    {
+        object->render(this->m_Shadowmap);
+        object->castShadow(this->getMousePositon(), this->m_Shadowmap); // Update shadowmap
+        this->m_Shadowmap.display();
+        this->m_Window.draw(sf::Sprite(this->m_Shadowmap.getTexture()));
+    }
     
     // Render Gui
     ImGui::SFML::Render(this->m_Window);
@@ -96,6 +110,9 @@ void Game::addObject()
     auto v1 = ds::vec2f(1, 1);
     std::cout << v1 << std::endl;
 
+    this->m_Objects.push_back(
+        new Square(ds::vec2f(400, 400), 100)
+    );
 }
 
 // Run-time Accessors
@@ -122,6 +139,12 @@ void Game::shutDown()
 {
     std::cout << "Shutting down.." << std::endl;
     ImGui::SFML::Shutdown();
+
+    for (size_t i {0}; i < this->m_Objects.size(); i++)
+    {
+        delete this->m_Objects.at(i);
+    }
+    this->m_Objects.clear();
 }
 
 // Constructors
@@ -139,6 +162,7 @@ Game::Game(
     this->initGui();
 
     // Create objects
+    this->m_Objects = {};
 }
 
 Game::~Game()
