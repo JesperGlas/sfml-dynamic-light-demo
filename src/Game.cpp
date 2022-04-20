@@ -112,7 +112,10 @@ void Game::addObject()
 
     this->m_Objects.push_back(
         //new Square(ds::vec2f(400, 400), 100)
-        new EvenShape(ds::vec2f(400, 400), 100, 16)
+        new EvenShape(ds::vec2f(400, 200), 100, 16)
+    );
+    this->m_Objects.push_back(
+        new EvenShape(ds::vec2f(1000, 600), 89, 24)
     );
 }
 

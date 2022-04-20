@@ -17,10 +17,14 @@ public:
         size_t size
     ) : Primitive(), evenShape2D(center, radius, size, 0)
     {
-        this->m_vertexArray = sf::VertexArray(sf::TriangleFan, this->m_size + 1);
+        // Init the vertex array used to draw the shape
+        this->m_vertexArray = sf::VertexArray(sf::TriangleFan, this->m_size + 2); // +2 refers to center and final connection end->start
+
+        // Set first point which is center in a VertexArray
         this->m_vertexArray[0].position = sf::Vector2f(center.x, center.y);
         this->m_vertexArray[0].color = sf::Color::Red;
 
+        // Set perimiter points
         size_t i {1}; // start at 1 since sf::VertexArray[0] is center
         for (auto vertex : this->m_vertices)
         {
@@ -29,7 +33,9 @@ public:
             i++;
         }
 
-        std::cout << "Size: " << size << " | i: " << i << std::endl;
+        // Set last point which connects last point with the first
+        this->m_vertexArray[i].position = sf::Vector2f(this->m_vertices[0].x, this->m_vertices[0].y);
+        this->m_vertexArray[i].color = sf::Color::Red;
     }
 
     ~EvenShape() {}
