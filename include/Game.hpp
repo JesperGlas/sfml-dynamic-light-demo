@@ -7,6 +7,7 @@
 
 #include "Primitive.hpp"
 #include "Square.hpp"
+#include "EvenShape.hpp"
 
 class Game
 {

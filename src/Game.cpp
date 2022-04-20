@@ -111,7 +111,8 @@ void Game::addObject()
     std::cout << v1 << std::endl;
 
     this->m_Objects.push_back(
-        new Square(ds::vec2f(400, 400), 100)
+        //new Square(ds::vec2f(400, 400), 100)
+        new EvenShape(ds::vec2f(400, 400), 100, 16)
     );
 }
 

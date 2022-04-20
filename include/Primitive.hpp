@@ -1,7 +1,7 @@
 #ifndef __PRIMITIVE_HPP__
 #define __PRIMITIVE_HPP__
 
-#include "vec2f.hpp"
+#include "SFML/Graphics.hpp"
 
 class Primitive
 {
