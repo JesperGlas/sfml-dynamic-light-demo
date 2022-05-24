@@ -6,15 +6,18 @@
 #include "imgui.h"
 
 #include "Primitive.hpp"
+#include "EvenShape.hpp"
 
 class Game
 {
 private:
     sf::RenderWindow m_Window;
+    sf::RenderTexture m_Shadowmap;
     sf::Event m_Event;
     sf::Clock m_DeltaClock;
 
     std::string m_Title;
+    std::vector<Primitive*> m_Objects;
 private:
     // Init functions
     void initWindow();

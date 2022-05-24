@@ -8,9 +8,9 @@ project(realtime-light-shadow-2D
 set(CMAKE_CXX_FLAGS "-W -Wall -std=c++14 -fopenmp")
 
 # Set binary destinations
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 # Dependencies
 include(FetchContent)
@@ -60,18 +60,17 @@ message( STATUS "Adding dynamic-shadow-lib")
 FetchContent_Declare(
   dynamic-shadows-lib
   GIT_REPOSITORY https://github.com/JesperGlas/dynamic-shadows-lib/
-  GIT_TAG 1cc0049724f20b2c9975f118bd7a5a8e6dabd09a # Latest
+  GIT_TAG eb5a588395fbb39df007c38c687c16ace8a8c9f7 # Latest release
   GIT_PROGRESS TRUE
 )
 
 FetchContent_MakeAvailable(dynamic-shadows-lib)
 
 # Set header dir
-set(HEADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-include_directories(${HEADERS_DIR})
+set(HEADERS_DIR ${PROJECT_SOURCE_DIR}/include)
 
 # Set source dir
-set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
 
 set(TARGET_BIN ${CMAKE_PROJECT_NAME})
 
@@ -88,4 +87,10 @@ target_link_libraries(
     sfml-graphics
     ImGui-SFML::ImGui-SFML
     dynamic-shadows-lib
+)
+
+target_include_directories(
+  ${TARGET_BIN}
+  PUBLIC
+    ${HEADERS_DIR}
 )
