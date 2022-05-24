@@ -15,7 +15,7 @@ public:
         ds::vec2f center,
         float radius,
         size_t size
-    ) : Primitive(), evenShape2D(center, radius, size, 0)
+    ) : Primitive(), evenShape2D(center, radius, size)
     {
         // Init the vertex array used to draw the shape
         this->m_vertexArray = sf::VertexArray(sf::TriangleFan, this->m_size + 2); // +2 refers to center and final connection end->start

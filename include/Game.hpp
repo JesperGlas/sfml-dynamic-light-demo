@@ -6,7 +6,6 @@
 #include "imgui.h"
 
 #include "Primitive.hpp"
-#include "Square.hpp"
 #include "EvenShape.hpp"
 
 class Game
