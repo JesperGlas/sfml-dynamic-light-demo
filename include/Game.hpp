@@ -12,6 +12,7 @@
 class Game
 {
 private:
+    sf::Shader m_Shader;
     sf::RenderWindow m_Window;
     sf::Sprite m_View;
     sf::RenderTexture m_ObjectTexture;
@@ -31,9 +32,9 @@ private:
     std::vector<LightSource *> m_LightSources;
 private:
     // Init functions
+    void initShaders();
     void initWindow();
     void initGui();
-    void initLightMap();
     
     // Run-time core
     void update();

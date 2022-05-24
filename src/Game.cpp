@@ -4,6 +4,18 @@
 
 // Init functions
 
+void Game::initShaders()
+{
+    if (!this->m_Shader.loadFromFile(
+        "shaders/shader.vert",
+        "shaders/shader.frag"
+    ))
+    {
+        std::cout << "Error loading shaders..." << std::endl;\
+        exit(EXIT_FAILURE);
+    }
+}
+
 /**
  * @brief Function responsible for initializing the main window.
  * 
@@ -39,11 +51,6 @@ void Game::initGui()
     ImGui::SFML::Init(this->m_Window);
     this->m_LightSource = new LightSource(0, 0, 50);
     this->m_Object = new EvenShape(vec2f(), 50, 6);
-}
-
-void Game::initLightMap()
-{
-
 }
 
 // Run-time Core functions
@@ -107,7 +114,7 @@ void Game::render()
 
     // Render shadows on shadowmap
     this->renderShadows();
-    
+
     // Draw view on window
     this->m_Window.draw(this->m_View);
 
@@ -127,6 +134,7 @@ void Game::renderObjects()
         obj->render(this->m_ObjectTexture);
     }
     this->m_ObjectTexture.display();
+    this->m_Shader.setUniform("objectMap", this->m_ObjectTexture.getTexture());
 }
 
 void Game::renderShadows()
@@ -147,6 +155,7 @@ void Game::renderShadows()
                 );
     }
     this->m_ShadowmapTexture.display();
+    this->m_Shader.setUniform("shadowMap", this->m_ShadowmapTexture.getTexture());
 }
 
 // Run-time Setters
@@ -205,6 +214,7 @@ Game::Game(
     std::string name
 ) : m_Title {name}
 {
+    this->initShaders();
     this->initWindow();
     this->initGui();
 
