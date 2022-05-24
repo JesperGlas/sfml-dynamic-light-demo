@@ -30,6 +30,13 @@ void Game::initWindow()
 void Game::initGui()
 {
     ImGui::SFML::Init(this->m_Window);
+    this->m_LightSource = new LightSource(0, 0, 50);
+    this->m_Object = new EvenShape(vec2f(), 50, 6);
+}
+
+void Game::initLightMap()
+{
+
 }
 
 // Run-time Core functions
@@ -50,6 +57,9 @@ void Game::update()
     }
 
     // Update objects
+    sf::Vector2f mp = this->getMousePositon();
+    this->m_LightSource->update(mp.x, mp.y);
+    this->m_Object->update(mp);
 
     // Update Gui
     ImGui::SFML::Update(this->m_Window, this->m_DeltaClock.restart());
@@ -84,6 +94,7 @@ void Game::render()
     this->m_Window.clear(sf::Color::Black);
     this->m_Shadowmap.clear(sf::Color::Black);
 
+    this->m_Object->render(this->m_Window);
 
     // Render objects (To shadowmap for now before shading is implemented)
     for (auto object : this->m_Objects)
@@ -144,11 +155,16 @@ void Game::shutDown()
     std::cout << "Shutting down.." << std::endl;
     ImGui::SFML::Shutdown();
 
+    delete this->m_LightSource;
+    delete this->m_Object;
+
     for (size_t i {0}; i < this->m_Objects.size(); i++)
-    {
         delete this->m_Objects.at(i);
-    }
     this->m_Objects.clear();
+
+    for (size_t i {0}; i < this->m_LightSources.size(); i++)
+        delete this->m_LightSources.at(i);
+    this->m_LightSources.clear();
 }
 
 // Constructors
