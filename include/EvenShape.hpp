@@ -55,7 +55,7 @@ public:
 
     ~EvenShape() {}
 
-    void render(sf::RenderTarget &target)
+    void render(sf::RenderTexture &target)
     {
         target.draw(this->m_vertexArray);
     }
@@ -66,7 +66,7 @@ public:
         this->updateVerticePositions();
     }
 
-    void castShadow(sf::Vector2f light_source, sf::RenderTexture &texture)
+    void castShadow(sf::Vector2f &light_source, sf::RenderTexture &texture)
     {
         auto shadow = sf::VertexArray(sf::Lines, 2);
         ds::line2D blocking = this->getBlockingEdge(ds::point2D(light_source.x, light_source.y));

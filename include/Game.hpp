@@ -13,7 +13,9 @@ class Game
 {
 private:
     sf::RenderWindow m_Window;
-    sf::RenderTexture m_Shadowmap;
+    sf::Sprite m_View;
+    sf::RenderTexture m_ObjectTexture;
+    sf::RenderTexture m_ShadowmapTexture;
     sf::Event m_Event;
     sf::Clock m_DeltaClock;
 
@@ -37,6 +39,8 @@ private:
     void update();
     void gui();
     void render();
+    void renderShadows();
+    void renderObjects();
 
     // Run-time Setters
     void addLightSource();

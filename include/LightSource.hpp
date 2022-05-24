@@ -10,10 +10,11 @@ class LightSource : public vec2f
 {
 public:
     float m_intensity;
+    sf::Vector2f m_sfVec2f;
 
 public:
     LightSource(float x, float y, float intensity)
-    : vec2f(x, y), m_intensity(intensity) {}
+    : vec2f(x, y), m_intensity(intensity), m_sfVec2f(this->x, this->y) {}
 
     void update(float x, float y) { this->x = x; this->y = y; }
 }; // LightSource

@@ -17,10 +17,17 @@ void Game::initWindow()
 
     m_Window.setFramerateLimit(60);
 
-    this->m_Shadowmap.create(
+    this->m_ObjectTexture.create(
         this->m_Window.getSize().x,
         this->m_Window.getSize().y
     );
+
+    this->m_ShadowmapTexture.create(
+        this->m_Window.getSize().x,
+        this->m_Window.getSize().y
+    );
+
+    this->m_View = sf::Sprite(m_ObjectTexture.getTexture());
 }
 
 /**
@@ -90,21 +97,20 @@ void Game::gui()
  */
 void Game::render()
 {
-    // Clear window and shadowmap
-    this->m_Window.clear(sf::Color::Black);
-    this->m_Shadowmap.clear(sf::Color::Black);
+    // Clear window
+    this->m_Window.clear(sf::Color::White);
 
-    this->m_Object->render(this->m_Window);
+    this->m_ShadowmapTexture.clear(sf::Color::Black);
 
-    // Render objects (To shadowmap for now before shading is implemented)
-    for (auto object : this->m_Objects)
-    {
-        object->render(this->m_Shadowmap);
-        object->castShadow(this->getMousePositon(), this->m_Shadowmap); // Update shadowmap
-        this->m_Shadowmap.display();
-        this->m_Window.draw(sf::Sprite(this->m_Shadowmap.getTexture()));
-    }
+    // Render objects on object texture
+    this->renderObjects();
+
+    // Render shadows on shadowmap
+    this->renderShadows();
     
+    // Draw view on window
+    this->m_Window.draw(this->m_View);
+
     // Render Gui
     ImGui::SFML::Render(this->m_Window);
 
@@ -112,22 +118,43 @@ void Game::render()
     this->m_Window.display();
 }
 
+void Game::renderObjects()
+{
+    this->m_ObjectTexture.clear(sf::Color::Green);
+    this->m_Object->render(this->m_ObjectTexture);
+    for (auto obj : this->m_Objects)
+    {
+        obj->render(this->m_ObjectTexture);
+    }
+    this->m_ObjectTexture.display();
+}
+
+void Game::renderShadows()
+{
+    this->m_ShadowmapTexture.clear(sf::Color::Black);
+    for (auto obj : this->m_Objects)
+        obj->castShadow(
+            this->m_LightSource->m_sfVec2f,
+            this->m_ShadowmapTexture
+            );
+
+    for (auto lightSource : this->m_LightSources)
+    {
+        for (auto obj : this->m_Objects)
+            obj->castShadow(
+                lightSource->m_sfVec2f,
+                this->m_ShadowmapTexture
+                );
+    }
+    this->m_ShadowmapTexture.display();
+}
+
 // Run-time Setters
 
 void Game::addObject()
 {
-    std::cout << "Adding object placeholder..." << std::endl;
-
-    auto v1 = ds::vec2f(1, 1);
-    std::cout << v1 << std::endl;
-
-    this->m_Objects.push_back(
-        //new Square(ds::vec2f(400, 400), 100)
-        new EvenShape(ds::vec2f(400, 200), 100, 16)
-    );
-    this->m_Objects.push_back(
-        new EvenShape(ds::vec2f(1000, 600), 89, 24)
-    );
+    this->m_Objects.push_back(this->m_Object);
+    this->m_Object = new EvenShape(vec2f(), 50, 6);
 }
 
 // Run-time Accessors
