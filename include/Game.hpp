@@ -15,8 +15,8 @@ private:
     sf::Shader m_Shader;
     sf::RenderWindow m_Window;
     sf::Sprite m_View;
-    sf::RenderTexture m_ObjectTexture;
-    sf::RenderTexture m_ShadowmapTexture;
+    sf::RenderTexture m_ViewTex;
+    sf::RenderTexture m_lightmap;
     sf::Event m_Event;
     sf::Clock m_DeltaClock;
 

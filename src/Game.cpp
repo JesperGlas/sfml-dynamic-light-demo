@@ -29,17 +29,17 @@ void Game::initWindow()
 
     m_Window.setFramerateLimit(60);
 
-    this->m_ObjectTexture.create(
+    this->m_ViewTex.create(
         this->m_Window.getSize().x,
         this->m_Window.getSize().y
     );
 
-    this->m_ShadowmapTexture.create(
+    this->m_lightmap.create(
         this->m_Window.getSize().x,
         this->m_Window.getSize().y
     );
 
-    this->m_View = sf::Sprite(m_ObjectTexture.getTexture());
+    this->m_View = sf::Sprite(m_ViewTex.getTexture());
 }
 
 /**
@@ -49,7 +49,7 @@ void Game::initWindow()
 void Game::initGui()
 {
     ImGui::SFML::Init(this->m_Window);
-    this->m_LightSource = new LightSource(0, 0, 50);
+    this->m_LightSource = new LightSource(this->getMousePositon(), 100);
     this->m_Object = new EvenShape(this->getMousePositon(), 50, 6);
 }
 
@@ -72,7 +72,7 @@ void Game::update()
 
     // Update objects
     sf::Vector2f mp = this->getMousePositon();
-    this->m_LightSource->update(mp.x, mp.y);
+    this->m_LightSource->update(mp);
     this->m_Object->update(mp);
 
     // Update Gui
@@ -107,8 +107,6 @@ void Game::render()
     // Clear window
     this->m_Window.clear(sf::Color::White);
 
-    this->m_ShadowmapTexture.clear(sf::Color::Black);
-
     // Render objects on object texture
     this->renderObjects();
 
@@ -116,7 +114,9 @@ void Game::render()
     this->renderShadows();
 
     // Draw view on window
-    this->m_Window.draw(this->m_View);
+    this->m_Shader.setUniform("u_currentTexture", sf::Shader::CurrentTexture);
+    this->m_Shader.setUniform("u_lightmap", this->m_lightmap.getTexture());
+    this->m_Window.draw(this->m_View, &this->m_Shader);
 
     // Render Gui
     ImGui::SFML::Render(this->m_Window);
@@ -127,35 +127,38 @@ void Game::render()
 
 void Game::renderObjects()
 {
-    this->m_ObjectTexture.clear(sf::Color::Green);
-    this->m_Object->render(this->m_ObjectTexture);
+    this->m_ViewTex.clear(sf::Color::Green);
+    this->m_Object->render(this->m_ViewTex);
     for (auto obj : this->m_Objects)
     {
-        obj->render(this->m_ObjectTexture);
+        obj->render(this->m_ViewTex);
     }
-    this->m_ObjectTexture.display();
-    this->m_Shader.setUniform("objectMap", this->m_ObjectTexture.getTexture());
+    this->m_ViewTex.display();
 }
 
 void Game::renderShadows()
 {
-    this->m_ShadowmapTexture.clear(sf::Color::Black);
-    for (auto obj : this->m_Objects)
-        obj->castShadow(
-            this->m_LightSource->m_sfVec2f,
-            this->m_ShadowmapTexture
-            );
+    this->m_lightmap.clear(sf::Color::Black);
 
+    this->m_LightSource->render(this->m_lightmap);
     for (auto lightSource : this->m_LightSources)
-    {
-        for (auto obj : this->m_Objects)
-            obj->castShadow(
-                lightSource->m_sfVec2f,
-                this->m_ShadowmapTexture
-                );
-    }
-    this->m_ShadowmapTexture.display();
-    this->m_Shader.setUniform("shadowMap", this->m_ShadowmapTexture.getTexture());
+        lightSource->render(this->m_lightmap);
+    
+    //for (auto obj : this->m_Objects)
+    //    obj->castShadow(
+    //        *this->m_LightSource,
+    //        this->m_lightmap
+    //        );
+//
+    //for (auto lightSource : this->m_LightSources)
+    //{
+    //    for (auto obj : this->m_Objects)
+    //        obj->castShadow(
+    //            *lightSource,
+    //            this->m_lightmap
+    //            );
+    //}
+    this->m_lightmap.display();
 }
 
 // Run-time Setters
