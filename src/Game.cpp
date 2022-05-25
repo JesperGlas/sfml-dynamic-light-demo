@@ -29,17 +29,17 @@ void Game::initWindow()
 
     m_Window.setFramerateLimit(60);
 
-    this->m_ViewTex.create(
+    this->m_ViewTexture.create(
         this->m_Window.getSize().x,
         this->m_Window.getSize().y
     );
 
-    this->m_lightmap.create(
+    this->m_Lightmap.create(
         this->m_Window.getSize().x,
         this->m_Window.getSize().y
     );
 
-    this->m_View = sf::Sprite(m_ViewTex.getTexture());
+    this->m_View = sf::Sprite(m_ViewTexture.getTexture());
 }
 
 /**
@@ -68,6 +68,22 @@ void Game::update()
 
         if (m_Event.type == sf::Event::Closed)
             this->m_Window.close();
+        if (m_Event.type == sf::Event::KeyReleased)
+        {
+            if (m_Event.key.code == sf::Keyboard::L)
+                this->m_ShowLightSource = !this->m_ShowLightSource;
+            if (m_Event.key.code == sf::Keyboard::O)
+                this->m_ShowObject = !this->m_ShowObject;
+            if (m_Event.key.code == sf::Keyboard::A)
+            {
+                if (this->m_ShowLightSource)
+                    this->addLightSource();
+                if (this->m_ShowObject)
+                    this->addObject();
+            }
+
+            m_DeltaClock.restart();
+        }
     }
 
     // Update objects
@@ -92,6 +108,12 @@ void Game::gui()
         this->getMousePositon().y
     );
 
+    if (ImGui::Button("Toggle Light"))
+        this->m_ShowLightSource = !this->m_ShowLightSource;
+
+    if (ImGui::Button("Toggle Object"))
+        this->m_ShowObject = !this->m_ShowObject;
+
     if (ImGui::Button("Add Object"))
     {
         this->addObject();
@@ -115,7 +137,7 @@ void Game::render()
 
     // Draw view on window
     this->m_Shader.setUniform("u_currentTexture", sf::Shader::CurrentTexture);
-    this->m_Shader.setUniform("u_lightmap", this->m_lightmap.getTexture());
+    this->m_Shader.setUniform("u_lightmap", this->m_Lightmap.getTexture());
     this->m_Window.draw(this->m_View, &this->m_Shader);
 
     // Render Gui
@@ -127,27 +149,30 @@ void Game::render()
 
 void Game::renderObjects()
 {
-    this->m_ViewTex.clear(sf::Color::Green);
-    this->m_Object->render(this->m_ViewTex);
+    this->m_ViewTexture.clear(sf::Color::Green);
+
     for (auto obj : this->m_Objects)
     {
-        obj->render(this->m_ViewTex);
+        obj->render(this->m_ViewTexture);
     }
-    this->m_ViewTex.display();
+
+    if (this->m_ShowObject)
+        this->m_Object->render(this->m_ViewTexture);
+
+    this->m_ViewTexture.display();
 }
 
 void Game::renderShadows()
 {
-    this->m_lightmap.clear(sf::Color::Black);
+    this->m_Lightmap.clear(sf::Color::Black);
 
-    this->m_LightSource->render(this->m_lightmap);
     for (auto lightSource : this->m_LightSources)
-        lightSource->render(this->m_lightmap);
+        lightSource->render(this->m_Lightmap);
     
     //for (auto obj : this->m_Objects)
     //    obj->castShadow(
     //        *this->m_LightSource,
-    //        this->m_lightmap
+    //        this->m_Lightmap
     //        );
 //
     //for (auto lightSource : this->m_LightSources)
@@ -155,13 +180,22 @@ void Game::renderShadows()
     //    for (auto obj : this->m_Objects)
     //        obj->castShadow(
     //            *lightSource,
-    //            this->m_lightmap
+    //            this->m_Lightmap
     //            );
     //}
-    this->m_lightmap.display();
+
+    if (this->m_ShowLightSource)
+        this->m_LightSource->render(this->m_Lightmap);
+        
+    this->m_Lightmap.display();
 }
 
 // Run-time Setters
+void Game::addLightSource()
+{
+    this->m_LightSources.push_back(this->m_LightSource);
+    this->m_LightSource = new LightSource(this->getMousePositon(), 100);   
+}
 
 void Game::addObject()
 {
