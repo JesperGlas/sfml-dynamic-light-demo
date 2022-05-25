@@ -1,8 +1,8 @@
 #ifndef __EVENSHAPE_HPP__
 #define __EVENSHAPE_HPP__
 
+#include "DSUtils.hpp"
 #include "Primitive.hpp"
-#include "evenShape2D.hpp"
 
 using namespace ds;
 
@@ -65,14 +65,25 @@ public:
         this->updateVerticePositions();
     }
 
-    void castShadow(sf::Vector2f &light_source, sf::RenderTexture &texture)
+    void castShadow(sf::Vector2f &ls, sf::RenderTexture &texture)
     {
-        auto shadow = sf::VertexArray(sf::Lines, 2);
-        ds::line2D blocking = this->getBlockingEdge(ds::point2D(light_source.x, light_source.y));
-        shadow.operator[](0).position = sf::Vector2f(blocking.start.x, blocking.start.y);
-        shadow.operator[](1).position = sf::Vector2f(blocking.end.x, blocking.end.y);
-        shadow.operator[](0).color = sf::Color::Green;
-        shadow.operator[](1).color = sf::Color::Green;
+        auto shadow = sf::VertexArray(sf::TriangleStrip, 4);
+        auto be = Edge(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
+        try {
+            be = ds::getBlockingEdge(ls, *this);
+        }
+        catch (std::exception &e)
+        {
+            std::cout << e.what() << " occured, continuing..." << std::endl;
+        }
+
+        shadow.operator[](0).position = be.m_start;
+        shadow.operator[](1).position = be.m_end;
+        shadow.operator[](2).position = be.m_start + ds::unit(ls, be.m_start) * 100.f;
+        shadow.operator[](3).position = be.m_end + ds::unit(ls, be.m_end) * 100.f;
+
+        for (size_t i {0}; i < shadow.getVertexCount(); i++)
+            shadow.operator[](i).color = sf::Color::Black;
 
         texture.draw(shadow);
     }

@@ -2,9 +2,6 @@
 #define __LIGHTSOURCE_HPP__
 
 #include "SFML/Graphics.hpp"
-#include "evenShape2D.hpp"
-
-using namespace ds;
 
 class LightSource : public sf::Vector2f, public sf::VertexArray
 {
@@ -29,7 +26,7 @@ public:
             sf::Vertex &vert = this->operator[](i);
             vert.position.x = shape[i].x;
             vert.position.y = shape[i].y;
-            vert.color = sf::Color::Black;
+            vert.color = sf::Color::Transparent;
         }
     }
 

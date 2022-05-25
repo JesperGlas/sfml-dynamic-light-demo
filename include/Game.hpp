@@ -1,7 +1,6 @@
 #ifndef _GAME_HPP_
 #define _GAME_HPP_
 
-#include "SFML/Graphics.hpp"
 #include "imgui-SFML.h"
 #include "imgui.h"
 
@@ -15,17 +14,18 @@ private:
     sf::Shader m_Shader;
     sf::RenderWindow m_Window;
     sf::Sprite m_View;
-    sf::RenderTexture m_ViewTex;
-    sf::RenderTexture m_lightmap;
+    sf::RenderTexture m_ViewTexture;
+    sf::RenderTexture m_Lightmap;
     sf::Event m_Event;
     sf::Clock m_DeltaClock;
+    bool m_KeyPressed {false};
 
     std::string m_Title;
 
-    bool m_ShowObject;
+    bool m_ShowObject {true};
     Primitive *m_Object;
 
-    bool m_ShowLightSource;
+    bool m_ShowLightSource {true};
     LightSource *m_LightSource;
 
     std::vector<Primitive *> m_Objects;
