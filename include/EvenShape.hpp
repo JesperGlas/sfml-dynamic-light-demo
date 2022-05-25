@@ -6,49 +6,48 @@
 
 using namespace ds;
 
-class EvenShape : public Primitive, public ds::evenShape2D
+class EvenShape : public Primitive, public ds::evenShape2D, public sf::VertexArray
 {
-private:
-    sf::VertexArray m_vertexArray;
 
 private:
     void updateVerticePositions()
     {
         // First vertex (Center)
-        sf::Vector2f &first_pos = this->m_vertexArray[0].position;
+        sf::Vector2f &first_pos = this->sf::VertexArray::operator[](0).position;
         first_pos.x = this->m_center.x;
         first_pos.y = this->m_center.y;
 
         // Middle vertices
         size_t i {1};
-        for (auto vertex : this->m_vertices)
+        for (auto vertex : this->evenShape2D::m_vertices)
         {
-            sf::Vector2f &current_pos = this->m_vertexArray[i].position;
+            sf::Vector2f &current_pos = this->sf::VertexArray::operator[](i).position;
             current_pos.x = vertex.x;
             current_pos.y = vertex.y;
             i++;
         }
 
         // Last vertice (Creates edge from first middle one with last)
-        sf::Vector2f &last_pos = this->m_vertexArray[i].position;
-        last_pos.x = this->operator[](0).x;
-        last_pos.y = this->operator[](0).y;
+        sf::Vector2f &last_pos = this->sf::VertexArray::operator[](i).position;
+        last_pos.x = this->evenShape2D::operator[](0).x;
+        last_pos.y = this->evenShape2D::operator[](0).y;
     }
 
     void updateVerticeColor()
     {
-        for (size_t i {0}; i < this->m_vertexArray.getVertexCount(); i++)
-            this->m_vertexArray[i].color = sf::Color::Red;
+        for (size_t i {0}; i < this->sf::VertexArray::getVertexCount(); i++)
+            this->sf::VertexArray::operator[](i).color = sf::Color::Red;
     }
 
 public:
     EvenShape(
-        ds::vec2f center,
+        sf::Vector2f center,
         float radius,
         size_t size
-    ) : Primitive(), evenShape2D(center, radius, size)
+    ) : Primitive(),
+        evenShape2D(ds::vec2f(center.x, center.y), radius, size),
+        sf::VertexArray(sf::TriangleFan, (size+2))
     {
-        this->m_vertexArray = sf::VertexArray(sf::TriangleFan, size + 2);
         this->updateVerticePositions();
         this->updateVerticeColor();
     }
@@ -57,12 +56,12 @@ public:
 
     void render(sf::RenderTexture &target)
     {
-        target.draw(this->m_vertexArray);
+        target.draw(*this);
     }
 
     void update(sf::Vector2f center)
     {
-        *this = EvenShape(ds::vec2f(center.x, center.y), this->m_radius, this->size());
+        *this = EvenShape(center, this->m_radius, this->size());
         this->updateVerticePositions();
     }
 

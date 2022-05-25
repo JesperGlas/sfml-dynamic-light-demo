@@ -50,7 +50,7 @@ void Game::initGui()
 {
     ImGui::SFML::Init(this->m_Window);
     this->m_LightSource = new LightSource(0, 0, 50);
-    this->m_Object = new EvenShape(vec2f(), 50, 6);
+    this->m_Object = new EvenShape(this->getMousePositon(), 50, 6);
 }
 
 // Run-time Core functions
@@ -163,7 +163,7 @@ void Game::renderShadows()
 void Game::addObject()
 {
     this->m_Objects.push_back(this->m_Object);
-    this->m_Object = new EvenShape(vec2f(), 50, 6);
+    this->m_Object = new EvenShape(this->getMousePositon(), 50, 6);
 }
 
 // Run-time Accessors
