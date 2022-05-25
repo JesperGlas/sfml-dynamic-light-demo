@@ -6,46 +6,66 @@
 
 using namespace ds;
 
-class EvenShape : public Primitive, public ds::evenShape2D
+class EvenShape : public Primitive, public ds::evenShape2D, public sf::VertexArray
 {
+
 private:
-    sf::VertexArray m_vertexArray;
-public:
-    EvenShape(
-        ds::vec2f center,
-        float radius,
-        size_t size
-    ) : Primitive(), evenShape2D(center, radius, size)
+    void updateVerticePositions()
     {
-        // Init the vertex array used to draw the shape
-        this->m_vertexArray = sf::VertexArray(sf::TriangleFan, this->m_size + 2); // +2 refers to center and final connection end->start
+        // First vertex (Center)
+        sf::Vector2f &first_pos = this->sf::VertexArray::operator[](0).position;
+        first_pos.x = this->m_center.x;
+        first_pos.y = this->m_center.y;
 
-        // Set first point which is center in a VertexArray
-        this->m_vertexArray[0].position = sf::Vector2f(center.x, center.y);
-        this->m_vertexArray[0].color = sf::Color::Red;
-
-        // Set perimiter points
-        size_t i {1}; // start at 1 since sf::VertexArray[0] is center
-        for (auto vertex : this->m_vertices)
+        // Middle vertices
+        size_t i {1};
+        for (auto vertex : this->evenShape2D::m_vertices)
         {
-            this->m_vertexArray[i].position = sf::Vector2f(vertex.x, vertex.y);
-            this->m_vertexArray[i].color = sf::Color::Red;
+            sf::Vector2f &current_pos = this->sf::VertexArray::operator[](i).position;
+            current_pos.x = vertex.x;
+            current_pos.y = vertex.y;
             i++;
         }
 
-        // Set last point which connects last point with the first
-        this->m_vertexArray[i].position = sf::Vector2f(this->m_vertices[0].x, this->m_vertices[0].y);
-        this->m_vertexArray[i].color = sf::Color::Red;
+        // Last vertice (Creates edge from first middle one with last)
+        sf::Vector2f &last_pos = this->sf::VertexArray::operator[](i).position;
+        last_pos.x = this->evenShape2D::operator[](0).x;
+        last_pos.y = this->evenShape2D::operator[](0).y;
+    }
+
+    void updateVerticeColor()
+    {
+        for (size_t i {0}; i < this->sf::VertexArray::getVertexCount(); i++)
+            this->sf::VertexArray::operator[](i).color = sf::Color::Red;
+    }
+
+public:
+    EvenShape(
+        sf::Vector2f center,
+        float radius,
+        size_t size
+    ) : Primitive(),
+        evenShape2D(ds::vec2f(center.x, center.y), radius, size),
+        sf::VertexArray(sf::TriangleFan, (size+2))
+    {
+        this->updateVerticePositions();
+        this->updateVerticeColor();
     }
 
     ~EvenShape() {}
 
-    void render(sf::RenderTarget &target)
+    void render(sf::RenderTexture &target)
     {
-        target.draw(this->m_vertexArray);
+        target.draw(*this);
     }
 
-    void castShadow(sf::Vector2f light_source, sf::RenderTexture &texture)
+    void update(sf::Vector2f center)
+    {
+        *this = EvenShape(center, this->m_radius, this->size());
+        this->updateVerticePositions();
+    }
+
+    void castShadow(sf::Vector2f &light_source, sf::RenderTexture &texture)
     {
         auto shadow = sf::VertexArray(sf::Lines, 2);
         ds::line2D blocking = this->getBlockingEdge(ds::point2D(light_source.x, light_source.y));
@@ -56,6 +76,7 @@ public:
 
         texture.draw(shadow);
     }
-};
+
+}; // EvenShape
 
 #endif

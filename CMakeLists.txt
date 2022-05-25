@@ -94,3 +94,5 @@ target_include_directories(
   PUBLIC
     ${HEADERS_DIR}
 )
+
+file(COPY ${PROJECT_SOURCE_DIR}/shaders DESTINATION ${PROJECT_BINARY_DIR}/bin)

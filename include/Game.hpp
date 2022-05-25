@@ -7,29 +7,44 @@
 
 #include "Primitive.hpp"
 #include "EvenShape.hpp"
+#include "LightSource.hpp"
 
 class Game
 {
 private:
+    sf::Shader m_Shader;
     sf::RenderWindow m_Window;
-    sf::RenderTexture m_Shadowmap;
+    sf::Sprite m_View;
+    sf::RenderTexture m_ViewTex;
+    sf::RenderTexture m_lightmap;
     sf::Event m_Event;
     sf::Clock m_DeltaClock;
 
     std::string m_Title;
-    std::vector<Primitive*> m_Objects;
+
+    bool m_ShowObject;
+    Primitive *m_Object;
+
+    bool m_ShowLightSource;
+    LightSource *m_LightSource;
+
+    std::vector<Primitive *> m_Objects;
+    std::vector<LightSource *> m_LightSources;
 private:
     // Init functions
+    void initShaders();
     void initWindow();
     void initGui();
-    void initLightMap();
     
     // Run-time core
     void update();
     void gui();
     void render();
+    void renderShadows();
+    void renderObjects();
 
     // Run-time Setters
+    void addLightSource();
     void addObject();
 
     // Run-time Accessors

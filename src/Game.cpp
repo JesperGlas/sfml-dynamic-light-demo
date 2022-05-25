@@ -4,6 +4,18 @@
 
 // Init functions
 
+void Game::initShaders()
+{
+    if (!this->m_Shader.loadFromFile(
+        "shaders/shader.vert",
+        "shaders/shader.frag"
+    ))
+    {
+        std::cout << "Error loading shaders..." << std::endl;\
+        exit(EXIT_FAILURE);
+    }
+}
+
 /**
  * @brief Function responsible for initializing the main window.
  * 
@@ -17,10 +29,17 @@ void Game::initWindow()
 
     m_Window.setFramerateLimit(60);
 
-    this->m_Shadowmap.create(
+    this->m_ViewTex.create(
         this->m_Window.getSize().x,
         this->m_Window.getSize().y
     );
+
+    this->m_lightmap.create(
+        this->m_Window.getSize().x,
+        this->m_Window.getSize().y
+    );
+
+    this->m_View = sf::Sprite(m_ViewTex.getTexture());
 }
 
 /**
@@ -30,6 +49,8 @@ void Game::initWindow()
 void Game::initGui()
 {
     ImGui::SFML::Init(this->m_Window);
+    this->m_LightSource = new LightSource(this->getMousePositon(), 100);
+    this->m_Object = new EvenShape(this->getMousePositon(), 50, 6);
 }
 
 // Run-time Core functions
@@ -50,6 +71,9 @@ void Game::update()
     }
 
     // Update objects
+    sf::Vector2f mp = this->getMousePositon();
+    this->m_LightSource->update(mp);
+    this->m_Object->update(mp);
 
     // Update Gui
     ImGui::SFML::Update(this->m_Window, this->m_DeltaClock.restart());
@@ -80,20 +104,20 @@ void Game::gui()
  */
 void Game::render()
 {
-    // Clear window and shadowmap
-    this->m_Window.clear(sf::Color::Black);
-    this->m_Shadowmap.clear(sf::Color::Black);
+    // Clear window
+    this->m_Window.clear(sf::Color::White);
 
+    // Render objects on object texture
+    this->renderObjects();
 
-    // Render objects (To shadowmap for now before shading is implemented)
-    for (auto object : this->m_Objects)
-    {
-        object->render(this->m_Shadowmap);
-        object->castShadow(this->getMousePositon(), this->m_Shadowmap); // Update shadowmap
-        this->m_Shadowmap.display();
-        this->m_Window.draw(sf::Sprite(this->m_Shadowmap.getTexture()));
-    }
-    
+    // Render shadows on shadowmap
+    this->renderShadows();
+
+    // Draw view on window
+    this->m_Shader.setUniform("u_currentTexture", sf::Shader::CurrentTexture);
+    this->m_Shader.setUniform("u_lightmap", this->m_lightmap.getTexture());
+    this->m_Window.draw(this->m_View, &this->m_Shader);
+
     // Render Gui
     ImGui::SFML::Render(this->m_Window);
 
@@ -101,22 +125,48 @@ void Game::render()
     this->m_Window.display();
 }
 
+void Game::renderObjects()
+{
+    this->m_ViewTex.clear(sf::Color::Green);
+    this->m_Object->render(this->m_ViewTex);
+    for (auto obj : this->m_Objects)
+    {
+        obj->render(this->m_ViewTex);
+    }
+    this->m_ViewTex.display();
+}
+
+void Game::renderShadows()
+{
+    this->m_lightmap.clear(sf::Color::Black);
+
+    this->m_LightSource->render(this->m_lightmap);
+    for (auto lightSource : this->m_LightSources)
+        lightSource->render(this->m_lightmap);
+    
+    //for (auto obj : this->m_Objects)
+    //    obj->castShadow(
+    //        *this->m_LightSource,
+    //        this->m_lightmap
+    //        );
+//
+    //for (auto lightSource : this->m_LightSources)
+    //{
+    //    for (auto obj : this->m_Objects)
+    //        obj->castShadow(
+    //            *lightSource,
+    //            this->m_lightmap
+    //            );
+    //}
+    this->m_lightmap.display();
+}
+
 // Run-time Setters
 
 void Game::addObject()
 {
-    std::cout << "Adding object placeholder..." << std::endl;
-
-    auto v1 = ds::vec2f(1, 1);
-    std::cout << v1 << std::endl;
-
-    this->m_Objects.push_back(
-        //new Square(ds::vec2f(400, 400), 100)
-        new EvenShape(ds::vec2f(400, 200), 100, 16)
-    );
-    this->m_Objects.push_back(
-        new EvenShape(ds::vec2f(1000, 600), 89, 24)
-    );
+    this->m_Objects.push_back(this->m_Object);
+    this->m_Object = new EvenShape(this->getMousePositon(), 50, 6);
 }
 
 // Run-time Accessors
@@ -144,11 +194,16 @@ void Game::shutDown()
     std::cout << "Shutting down.." << std::endl;
     ImGui::SFML::Shutdown();
 
+    delete this->m_LightSource;
+    delete this->m_Object;
+
     for (size_t i {0}; i < this->m_Objects.size(); i++)
-    {
         delete this->m_Objects.at(i);
-    }
     this->m_Objects.clear();
+
+    for (size_t i {0}; i < this->m_LightSources.size(); i++)
+        delete this->m_LightSources.at(i);
+    this->m_LightSources.clear();
 }
 
 // Constructors
@@ -162,6 +217,7 @@ Game::Game(
     std::string name
 ) : m_Title {name}
 {
+    this->initShaders();
     this->initWindow();
     this->initGui();
 
