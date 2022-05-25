@@ -1,7 +1,6 @@
 #ifndef _GAME_HPP_
 #define _GAME_HPP_
 
-#include "SFML/Graphics.hpp"
 #include "imgui-SFML.h"
 #include "imgui.h"
 

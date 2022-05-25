@@ -169,24 +169,24 @@ void Game::renderShadows()
     for (auto lightSource : this->m_LightSources)
         lightSource->render(this->m_Lightmap);
     
-    //for (auto obj : this->m_Objects)
-    //    obj->castShadow(
-    //        *this->m_LightSource,
-    //        this->m_Lightmap
-    //        );
-//
-    //for (auto lightSource : this->m_LightSources)
-    //{
-    //    for (auto obj : this->m_Objects)
-    //        obj->castShadow(
-    //            *lightSource,
-    //            this->m_Lightmap
-    //            );
-    //}
+    for (auto obj : this->m_Objects)
+        obj->castShadow(
+            *this->m_LightSource,
+            this->m_Lightmap
+            );
+
+    for (auto lightSource : this->m_LightSources)
+    {
+        for (auto obj : this->m_Objects)
+            obj->castShadow(
+                *lightSource,
+                this->m_Lightmap
+                );
+    }
 
     if (this->m_ShowLightSource)
         this->m_LightSource->render(this->m_Lightmap);
-        
+
     this->m_Lightmap.display();
 }
 
