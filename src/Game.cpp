@@ -48,7 +48,8 @@ void Game::initWindow()
  */
 void Game::initGui()
 {
-    ImGui::SFML::Init(this->m_Window);
+    if (!ImGui::SFML::Init(this->m_Window))
+        std::cout << "Could not load GUI..." << std::endl;
     this->m_LightSource = new LightSource(this->getMousePositon(), 100);
     this->m_Object = new EvenShape(this->getMousePositon(), 50, 6);
 }
@@ -84,6 +85,10 @@ void Game::update()
 
             m_DeltaClock.restart();
         }
+
+        if (m_Event.type == sf::Event::MouseButtonReleased)
+            if (m_Event.mouseButton.button == sf::Mouse::Right)
+                this->mouseAdd();
     }
 
     // Update objects
@@ -107,17 +112,16 @@ void Game::gui()
         this->getMousePositon().x,
         this->getMousePositon().y
     );
+    ImGui::Spacing();
 
-    if (ImGui::Button("Toggle Light"))
-        this->m_ShowLightSource = !this->m_ShowLightSource;
+    ImGui::Text("Scene");
+    ImGui::SliderFloat("Ambiant Light", &this->m_Ambiance, 0.f, 1.f);
+    ImGui::Spacing();
 
-    if (ImGui::Button("Toggle Object"))
-        this->m_ShowObject = !this->m_ShowObject;
-
-    if (ImGui::Button("Add Object"))
-    {
-        this->addObject();
-    }
+    ImGui::Text("Light Source");
+    if (ImGui::SliderFloat("Intensity", &this->m_LightIntensity, 0.f, 1000.f))
+        this->m_LightSource->resize(this->m_LightIntensity);
+    
 }
 
 /**
@@ -136,6 +140,7 @@ void Game::render()
     this->renderShadows();
 
     // Draw view on window
+    this->m_Shader.setUniform("u_ambiance", this->m_Ambiance);
     this->m_Shader.setUniform("u_currentTexture", sf::Shader::CurrentTexture);
     this->m_Shader.setUniform("u_lightmap", this->m_Lightmap.getTexture());
     this->m_Window.draw(this->m_View, &this->m_Shader);
@@ -177,6 +182,9 @@ void Game::renderShadows()
 
     for (auto lightSource : this->m_LightSources)
     {
+        if (this->m_ShowObject)
+            this->m_Object->castShadow(*lightSource, this->m_Lightmap);
+
         for (auto obj : this->m_Objects)
             obj->castShadow(
                 *lightSource,
@@ -191,10 +199,18 @@ void Game::renderShadows()
 }
 
 // Run-time Setters
+void Game::mouseAdd()
+{
+    if (this->m_ShowLightSource)
+        this->addLightSource();
+    if (this->m_ShowObject)
+        this->addObject();
+}
+
 void Game::addLightSource()
 {
     this->m_LightSources.push_back(this->m_LightSource);
-    this->m_LightSource = new LightSource(this->getMousePositon(), 100);   
+    this->m_LightSource = new LightSource(this->getMousePositon(), this->m_LightIntensity);   
 }
 
 void Game::addObject()

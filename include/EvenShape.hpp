@@ -65,7 +65,7 @@ public:
         this->updateVerticePositions();
     }
 
-    void castShadow(sf::Vector2f &ls, sf::RenderTexture &texture)
+    void castShadow(LightSource &ls, sf::RenderTexture &texture)
     {
         auto shadow = sf::VertexArray(sf::TriangleStrip, 4);
         auto be = Edge(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
@@ -79,8 +79,12 @@ public:
 
         shadow.operator[](0).position = be.m_start;
         shadow.operator[](1).position = be.m_end;
-        shadow.operator[](2).position = be.m_start + ds::unit(ls, be.m_start) * 100.f;
-        shadow.operator[](3).position = be.m_end + ds::unit(ls, be.m_end) * 100.f;
+
+        float start_dist = ls.m_Intensity - abs(ds::distance(ls, be.m_start));
+        shadow.operator[](2).position = be.m_start + ds::unit(ls, be.m_start) * start_dist;
+
+        float end_dist = ls.m_Intensity - abs(ds::distance(ls, be.m_end));
+        shadow.operator[](3).position = be.m_end + ds::unit(ls, be.m_end) * end_dist;
 
         for (size_t i {0}; i < shadow.getVertexCount(); i++)
             shadow.operator[](i).color = sf::Color::Black;

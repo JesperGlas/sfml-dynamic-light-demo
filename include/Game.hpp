@@ -22,6 +22,9 @@ private:
 
     std::string m_Title;
 
+    float m_Ambiance {0.2f};
+    float m_LightIntensity {400.f};
+
     bool m_ShowObject {true};
     Primitive *m_Object;
 
@@ -44,6 +47,7 @@ private:
     void renderObjects();
 
     // Run-time Setters
+    void mouseAdd();
     void addLightSource();
     void addObject();
 
