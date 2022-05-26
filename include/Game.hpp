@@ -22,6 +22,8 @@ private:
 
     std::string m_Title;
 
+    float m_Ambiance {0.f};
+
     bool m_ShowObject {true};
     Primitive *m_Object;
 

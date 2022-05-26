@@ -1,4 +1,4 @@
-// uniform sampler2D u_objectMap;
+uniform float u_ambiance;
 uniform sampler2D u_currentTexture;
 uniform sampler2D u_lightmap;
 
@@ -9,5 +9,5 @@ void main()
     vec4 light = texture2D(u_lightmap, gl_TexCoord[0].xy);
 
     // multiply it by the color
-    gl_FragColor = px_color * clamp(light, 0.f, 1.f);
+    gl_FragColor = px_color * clamp(light, 0.f, 1.f) * u_ambiance;
 }

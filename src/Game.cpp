@@ -108,6 +108,8 @@ void Game::gui()
         this->getMousePositon().y
     );
 
+    ImGui::SliderFloat("Ambiant Light", &this->m_Ambiance, 0.f, 1.f);
+
     if (ImGui::Button("Toggle Light"))
         this->m_ShowLightSource = !this->m_ShowLightSource;
 
@@ -136,6 +138,7 @@ void Game::render()
     this->renderShadows();
 
     // Draw view on window
+    this->m_Shader.setUniform("u_ambiance", this->m_Ambiance);
     this->m_Shader.setUniform("u_currentTexture", sf::Shader::CurrentTexture);
     this->m_Shader.setUniform("u_lightmap", this->m_Lightmap.getTexture());
     this->m_Window.draw(this->m_View, &this->m_Shader);
