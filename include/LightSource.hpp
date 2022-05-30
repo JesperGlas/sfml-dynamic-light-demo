@@ -19,7 +19,7 @@ public:
         this->operator[](0).position = center;
         this->operator[](0).color = sf::Color::White;
 
-        ds::evenShape2D shape = ds::evenShape2D(
+        auto shape = ds::shape2D(
             ds::point2D(center.x, center.y),
             m_Intensity,
             this->getVertexCount() - 2
@@ -49,7 +49,7 @@ public:
     {
         this->m_Intensity = intensity;
         sf::Vector2f c = this->operator[](0).position;
-        auto sh = ds::evenShape2D(
+        auto sh = ds::shape2D(
             ds::point2D(c.x, c.y),
             m_Intensity,
             this->getVertexCount() - 2

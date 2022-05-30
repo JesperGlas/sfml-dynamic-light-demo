@@ -23,10 +23,13 @@ private:
     std::string m_Title;
 
     float m_Ambiance {0.2f};
-    float m_LightIntensity {400.f};
+    float m_LightIntensity {800.f};
+
 
     bool m_ShowObject {true};
     Primitive *m_Object;
+    float m_ObjectRadius {50.f};
+    int m_ObjectVertices {16};
 
     bool m_ShowLightSource {true};
     LightSource *m_LightSource;
@@ -43,6 +46,7 @@ private:
     void update();
     void gui();
     void render();
+    void renderLights();
     void renderShadows();
     void renderObjects();
 

@@ -50,8 +50,12 @@ void Game::initGui()
 {
     if (!ImGui::SFML::Init(this->m_Window))
         std::cout << "Could not load GUI..." << std::endl;
-    this->m_LightSource = new LightSource(this->getMousePositon(), 100);
-    this->m_Object = new EvenShape(this->getMousePositon(), 50, 6);
+    this->m_LightSource = new LightSource(this->getMousePositon(), this->m_LightIntensity);
+    this->m_Object = new EvenShape(
+        this->getMousePositon(),
+        this->m_ObjectRadius,
+        3
+        );
 }
 
 // Run-time Core functions
@@ -121,7 +125,11 @@ void Game::gui()
     ImGui::Text("Light Source");
     if (ImGui::SliderFloat("Intensity", &this->m_LightIntensity, 0.f, 1000.f))
         this->m_LightSource->resize(this->m_LightIntensity);
-    
+    ImGui::Spacing();
+
+    ImGui::Text("Object");
+    ImGui::InputFloat("Radius", &this->m_ObjectRadius);
+    ImGui::InputInt("Vertices", &this->m_ObjectVertices);
 }
 
 /**
@@ -133,11 +141,11 @@ void Game::render()
     // Clear window
     this->m_Window.clear(sf::Color::White);
 
-    // Render objects on object texture
-    this->renderObjects();
-
     // Render shadows on shadowmap
     this->renderShadows();
+
+    // Render objects on object texture
+    this->renderObjects();
 
     // Draw view on window
     this->m_Shader.setUniform("u_ambiance", this->m_Ambiance);
@@ -167,18 +175,26 @@ void Game::renderObjects()
     this->m_ViewTexture.display();
 }
 
+void Game::renderLights()
+{
+
+}
+
 void Game::renderShadows()
 {
     this->m_Lightmap.clear(sf::Color::Black);
-
+    
+    if (this->m_ShowLightSource)
+        this->m_LightSource->render(this->m_Lightmap);
+    
     for (auto lightSource : this->m_LightSources)
         lightSource->render(this->m_Lightmap);
-    
-    for (auto obj : this->m_Objects)
-        obj->castShadow(
-            *this->m_LightSource,
-            this->m_Lightmap
-            );
+
+    if (this->m_ShowLightSource)
+    {
+        for (auto obj : this->m_Objects)
+            obj->castShadow(*this->m_LightSource, this->m_Lightmap);
+    }
 
     for (auto lightSource : this->m_LightSources)
     {
@@ -191,9 +207,6 @@ void Game::renderShadows()
                 this->m_Lightmap
                 );
     }
-
-    if (this->m_ShowLightSource)
-        this->m_LightSource->render(this->m_Lightmap);
 
     this->m_Lightmap.display();
 }
@@ -216,7 +229,11 @@ void Game::addLightSource()
 void Game::addObject()
 {
     this->m_Objects.push_back(this->m_Object);
-    this->m_Object = new EvenShape(this->getMousePositon(), 50, 6);
+    this->m_Object = new EvenShape(
+        this->getMousePositon(),
+        this->m_ObjectRadius,
+        this->m_ObjectVertices
+        );
 }
 
 // Run-time Accessors
