@@ -6,7 +6,7 @@
 
 using namespace ds;
 
-class EvenShape : public Primitive, public ds::evenShape2D, public sf::VertexArray
+class EvenShape : public Primitive, public ds::shape2D, public sf::VertexArray
 {
 
 private:
@@ -19,7 +19,7 @@ private:
 
         // Middle vertices
         size_t i {1};
-        for (auto vertex : this->evenShape2D::m_vertices)
+        for (auto vertex : this->shape2D::m_vertices)
         {
             sf::Vector2f &current_pos = this->sf::VertexArray::operator[](i).position;
             current_pos.x = vertex.x;
@@ -29,8 +29,8 @@ private:
 
         // Last vertice (Creates edge from first middle one with last)
         sf::Vector2f &last_pos = this->sf::VertexArray::operator[](i).position;
-        last_pos.x = this->evenShape2D::operator[](0).x;
-        last_pos.y = this->evenShape2D::operator[](0).y;
+        last_pos.x = this->shape2D::operator[](0).x;
+        last_pos.y = this->shape2D::operator[](0).y;
     }
 
     void updateVerticeColor()
@@ -45,7 +45,7 @@ public:
         float radius,
         size_t size
     ) : Primitive(),
-        evenShape2D(ds::vec2f(center.x, center.y), radius, size),
+        shape2D(ds::vec2f(center.x, center.y), radius, size),
         sf::VertexArray(sf::TriangleFan, (size+2))
     {
         this->updateVerticePositions();
@@ -67,10 +67,13 @@ public:
 
     void castShadow(LightSource &ls, sf::RenderTexture &texture)
     {
+        if (!(abs(sfds::distance(ls, this->sf::VertexArray::operator[](0).position) < ls.m_Intensity)))
+            return;
+
         auto shadow = sf::VertexArray(sf::TriangleStrip, 4);
-        auto be = Edge(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
+        auto be = sfds::Edge(sf::Vector2f(0, 0), sf::Vector2f(0, 0));
         try {
-            be = ds::getBlockingEdge(ls, *this);
+            be = sfds::getBlockingEdge(ls, *this);
         }
         catch (std::exception &e)
         {
@@ -78,16 +81,17 @@ public:
         }
 
         shadow.operator[](0).position = be.m_start;
+        shadow.operator[](0).color = sf::Color::Black;
         shadow.operator[](1).position = be.m_end;
+        shadow.operator[](1).color = sf::Color::Black;
 
-        float start_dist = ls.m_Intensity - abs(ds::distance(ls, be.m_start));
-        shadow.operator[](2).position = be.m_start + ds::unit(ls, be.m_start) * start_dist;
+        float start_dist = ls.m_Intensity - abs(sfds::distance(ls, be.m_start));
+        shadow.operator[](2).position = be.m_start + sfds::unit(ls, be.m_start) * start_dist;
+        shadow.operator[](2).color = sf::Color::Transparent;
 
-        float end_dist = ls.m_Intensity - abs(ds::distance(ls, be.m_end));
-        shadow.operator[](3).position = be.m_end + ds::unit(ls, be.m_end) * end_dist;
-
-        for (size_t i {0}; i < shadow.getVertexCount(); i++)
-            shadow.operator[](i).color = sf::Color::Black;
+        float end_dist = ls.m_Intensity - abs(sfds::distance(ls, be.m_end));
+        shadow.operator[](3).position = be.m_end + sfds::unit(ls, be.m_end) * end_dist;
+        shadow.operator[](3).color = sf::Color::Transparent;
 
         texture.draw(shadow);
     }

@@ -2,9 +2,9 @@
 #define __DSUTILS_HPP__
 
 #include "SFML/Graphics.hpp"
-#include "evenShape2D.hpp"
+#include "shape2D.hpp"
 
-namespace ds
+namespace sfds
 {
 
 class Edge {
@@ -28,7 +28,7 @@ inline float distance(const sf::Vector2f &start, const sf::Vector2f &end)
     return ds::vec2f(norm.x, norm.y).magnitude();
 }
 
-inline Edge getBlockingEdge(const sf::Vector2f &ls, const ds::evenShape2D &shape)
+inline Edge getBlockingEdge(const sf::Vector2f &ls, const ds::shape2D &shape)
 {
     ds::line2D be = shape.getBlockingEdge(ds::point2D(ls.x, ls.y));
     return Edge(
